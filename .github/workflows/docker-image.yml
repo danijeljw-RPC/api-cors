@@ -16,3 +16,22 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+
+  publish:
+
+    run-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login to Dockerhub
+      run: |
+        echo -e ${{ secrets.DOCKER_API_KEY }} | docker login -u ${{ secrets.DOCKER_API_USERID }} --password-stdin
+    - name: Build image
+      run: |
+        docker build --rm --tag repasscloud/cors-api:$(date +%s) --file Dockerfile
+        docker image tag repasscloud/cors-api:$(date +%s) repasscloud/cors-api:latest
+    - name: Deploy to DH
+      run: |
+        docker image push repasscloud/cors-api:latest
+        docker image push repasscloud/cors-api:$(date +%s)
