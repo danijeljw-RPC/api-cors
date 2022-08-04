@@ -29,7 +29,7 @@ jobs:
         echo -e ${{ secrets.DOCKER_API_KEY }} | docker login -u ${{ secrets.DOCKER_API_USERID }} --password-stdin
     - name: Build image
       run: |
-        docker build --rm --tag repasscloud/cors-api:$(date +%s) --file Dockerfile
+        docker build . --rm --tag repasscloud/cors-api:$(date +%s) --file Dockerfile
         docker image tag repasscloud/cors-api:$(date +%s) repasscloud/cors-api:latest
     - name: Deploy to DH
       run: |
